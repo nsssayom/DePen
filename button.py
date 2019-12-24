@@ -10,7 +10,7 @@ from gpiozero import Button
 was_held = False
 is_active = False
 definition_index = 0
-word = sys.argv[1]
+word = sys.argv[1]      # TODO: Add OpenCV routines here
 
 def held():
     global was_held
@@ -20,12 +20,11 @@ def released():
     global was_held
     global word
     global is_active
-    global is_new_word
     if not was_held:
         pressed()
     else:
         print("button was held")
-        print_prompt("Searching meaning for \n{0}".format(word))
+        print_prompt("Searching meaning for \n{0}".format(word))    # TODO: word will be received here 
         print_definition(word, 0)
         is_active = True
     was_held = False

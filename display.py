@@ -8,7 +8,6 @@ from luma.core.render import canvas
 from luma.core.virtual import terminal
 from wordnet import get_synset
 
-
 def init_terminal():
     try:
         device = get_device()
@@ -18,7 +17,6 @@ def init_terminal():
         return term
     except Exception as e:
         print ("Error Initializing Display Driver : {0}".format(e))
-
 
 def make_font(name, size):
     font_path = os.path.abspath(os.path.join(
