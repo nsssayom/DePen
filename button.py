@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import datetime
 from signal import pause
 from time import sleep
 
@@ -8,9 +9,9 @@ from display import print_definition, print_prompt
 from gpiozero import Button
 
 was_held = False
-is_active = False
 definition_index = 0
 word = sys.argv[1]      # TODO: Add OpenCV routines here
+batch_id = None         # Identify each scan run with timestamp. None if no scan is performed
 
 def held():
     global was_held
@@ -19,22 +20,22 @@ def held():
 def released():
     global was_held
     global word
-    global is_active
+    global batch_id
     if not was_held:
         pressed()
     else:
         print("button was held")
         print_prompt("Searching meaning for \n{0}".format(word))    # TODO: word will be received here 
         print_definition(word, 0)
-        is_active = True
+        batch_id = str(datetime.datetime.now())
     was_held = False
 
 def pressed():
-    global is_active
+    global batch_id
     global definition_index
     global word
     print("button was pressed")
-    if is_active:
+    if batch_id:
         definition_index = (definition_index + 1) % 5 
         print_definition(word, definition_index)
     else:

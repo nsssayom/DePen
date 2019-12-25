@@ -12,7 +12,7 @@ def init_terminal():
     try:
         device = get_device()
         device.contrast(255)
-        font = make_font('Consolas.ttf', 10)
+        font = make_font('Consolas.ttf', 20)
         term = terminal(device, font)
         return term
     except Exception as e:
@@ -44,7 +44,7 @@ def print_prompt(msg):
 def test():
     term = init_terminal()
     term.animate = True
-    term.puts("Testing")
+    term.puts("\n   Marry   \n Christmas ")
     sleep(30)
 
 #test()
