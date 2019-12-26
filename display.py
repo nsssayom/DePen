@@ -12,7 +12,7 @@ def init_terminal():
     try:
         device = get_device()
         device.contrast(255)
-        font = make_font('Consolas.ttf', 20)
+        font = make_font('Consolas.ttf', 12)
         term = terminal(device, font)
         return term
     except Exception as e:
@@ -25,6 +25,10 @@ def make_font(name, size):
 
 def print_definition(word, index):
     synset = get_synset(word)
+    if index > 4:
+        index = index % 5
+    if index > len(synset) - 1:
+        index = index % len(synset)
     defset = synset[index]
     text = word + " [" + defset['lexname'] + "] " + defset['definition']
     term = init_terminal()

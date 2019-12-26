@@ -1,22 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# Copyright (c) 2017-18 Richard Hull and contributors
-# See LICENSE.rst for details.
-# PYTHON_ARGCOMPLETE_OK
-
-"""
-Capture continuous video stream with picamera and display it on a screen.
-
-Requires picamera to be installed.
-"""
-
+import datetime
 import io
 import sys
 import threading
 import time
 
+import numpy as np
 from PIL import Image
 
+import cv2
 import picamera
 from display_driver import get_device
 
@@ -25,6 +16,9 @@ done = False
 lock = threading.Lock()
 pool = []
 
+def trigger_done():
+    global done
+    done = True
 
 class ImageProcessor(threading.Thread):
     def __init__(self):
@@ -37,6 +31,7 @@ class ImageProcessor(threading.Thread):
     def run(self):
         # this method runs in a separate thread
         global done
+        device = get_device()
         while not self.terminated:
             # wait for an image to be written to the stream
             if self.event.wait(1):
@@ -46,7 +41,8 @@ class ImageProcessor(threading.Thread):
                     # read the image and display it on screen
                     photo = Image.open(self.stream)
                     device.display(photo.convert(device.mode))
-
+                    opencvImage = cv2.cvtColor(np.array(photo), cv2.COLOR_RGB2BGR)
+                    cv2.imwrite("captured_images/" + str(datetime.datetime.now()) + ".jpg", opencvImage)
                     # set done to True if you want the script to terminate
                     # at some point
                     # done=True
@@ -59,7 +55,6 @@ class ImageProcessor(threading.Thread):
                     # return ourselves to the pool
                     with lock:
                         pool.append(self)
-
 
 def streams():
     while not done:
@@ -76,16 +71,12 @@ def streams():
             time.sleep(0.1)
 
 
-cameraResolution = (640, 480)
-cameraFrameRate = 8
-device = get_device()
-
 with picamera.PiCamera() as camera:
     pool = [ImageProcessor() for i in range(4)]
 
     # set camera resolution
-    camera.resolution = cameraResolution
-    camera.framerate = cameraFrameRate
+    camera.resolution = (640, 480)
+    camera.framerate = 2
 
     print("Starting camera preview...")
     camera.start_preview()
@@ -93,6 +84,7 @@ with picamera.PiCamera() as camera:
 
     print("Capturing video...")
     try:
+        device = get_device()
         camera.capture_sequence(streams(), use_video_port=True, resize=device.size)
 
         # shut down the processors in an orderly fashion

@@ -28,6 +28,7 @@ def released():
         print_prompt("Searching meaning for \n{0}".format(word))    # TODO: word will be received here 
         print_definition(word, 0)
         batch_id = str(datetime.datetime.now())
+        print ("Starting new Batch: {0}".format(batch_id))
     was_held = False
 
 def pressed():
@@ -36,7 +37,7 @@ def pressed():
     global word
     print("button was pressed")
     if batch_id:
-        definition_index = (definition_index + 1) % 5 
+        definition_index = (definition_index + 1)
         print_definition(word, definition_index)
     else:
         print_prompt ("Please hold the button and scan a word")
