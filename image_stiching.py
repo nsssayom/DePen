@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from imutils import paths
-
+import sys
 def genTemplate(img):
     global H_templ_ratio
     # we get the image's width and height
@@ -116,7 +116,7 @@ def stitchImages(imgs, templates_loc):
 
 if __name__ == '__main__':
     print("[INFO] loading images...")
-    imagePaths = sorted(list(paths.list_images('captured_images/section')))
+    imagePaths = sorted(list(paths.list_images('captured_images/' + sys.argv[1])))
     images = []
 
 # loop over the image paths, load each one, and add them to our
