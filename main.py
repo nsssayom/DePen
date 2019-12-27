@@ -13,7 +13,7 @@ from ocr import ocr
 
 was_held = False
 definition_index = 0
-word = sys.argv[1]      # TODO: Add OpenCV routines here
+word = None
 batch_id = None         # Identify each scan run with timestamp. None if no scan is performed
 process = None
 
@@ -24,7 +24,7 @@ def held():
     was_held = True
     print("Button HELD")
     batch_id = str(datetime.datetime.now()).replace(" ", "_")
-    print ("Starting new Batch: {0}".format(batch_id))
+    print ("Starting new Scan Batch: {0}".format(batch_id))
     process = subprocess.Popen(['python3', 'get_text_image.py', batch_id])
 
 def released():
