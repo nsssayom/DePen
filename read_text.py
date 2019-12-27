@@ -53,11 +53,7 @@ class ImageProcessor(threading.Thread):
                         os.mkdir(dir_name)
                     file_path = str(os.path.join(dir_name, str(datetime.datetime.now()) + ".jpg"))
                     cv2.imwrite( file_path, opencvImage)
-                    
-                    #photo = Image.fromarray(cv2.cvtColor(gray, cv2.COLOR_BGR2RGB))
-                    # set done to True if you want the script to terminate
-                    # at some point
-                    # done=True
+
                 finally:
                     # Reset the stream and event
                     self.stream.seek(0)

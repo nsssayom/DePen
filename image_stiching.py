@@ -154,4 +154,4 @@ def get_stitched_image(batch_id):
     file_path = str(os.path.join(dir_name, "stitched_image.jpg"))
     cv2.imwrite( file_path, result)
 
-get_stitched_image ("section")
+#get_stitched_image ("section")

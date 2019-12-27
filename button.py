@@ -8,6 +8,8 @@ from time import sleep
 
 from display import print_definition, print_prompt
 from gpiozero import Button
+from image_stiching import get_stitched_image
+from ocr import ocr
 
 was_held = False
 definition_index = 0
@@ -23,7 +25,7 @@ def held():
     print("Button HELD")
     batch_id = str(datetime.datetime.now()).replace(" ", "_")
     print ("Starting new Batch: {0}".format(batch_id))
-    process = subprocess.Popen(['python3', 'read_text.py', batch_id])
+    process = subprocess.Popen(['python3', 'get_text_image.py', batch_id])
 
 def released():
     global process
@@ -35,8 +37,10 @@ def released():
     else:
         print("Button Released from HOLD state")
         process.terminate()
-
-        print_prompt("Searching meaning for \n{0}".format(word))    # TODO: word will be received here 
+        get_stitched_image (batch_id)
+        word = ocr(batch_id)        
+        # TODO: Word filtering algorithm needs to be introduced here
+        print_prompt("Searching meaning for \n{0}".format(word)) 
         print_definition(word, 0)
         
     was_held = False
