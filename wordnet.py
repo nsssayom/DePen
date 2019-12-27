@@ -17,6 +17,10 @@ def get_synset(word):
     #word = check_spelling(word)
     syns=wordnet.synsets(word)
     syns_length=len(syns)
+    if syns_length is 0:
+        print ("No Result")
+        return None
+
     print(syns_length)
     definitions=[]
     count=0
