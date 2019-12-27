@@ -1,7 +1,13 @@
+import datetime
+import os
+import sys
+
 import numpy as np
+
 import cv2
 from imutils import paths
-import sys
+
+
 def genTemplate(img):
     global H_templ_ratio
     # we get the image's width and height
@@ -30,7 +36,7 @@ def addBlackMargins(img, top, bottom, left, right):
 
 
 def calcFinalImgSize(imgs, loc):
-    global V_templ_ratio, H_templ_ratio
+    global  H_templ_ratio
     y_offset = 0
     max_margin_top = 0
     max_margin_bottom = 0  # maximum margins that will be needed above and bellow the first image in order to stitch all the images into one mat
@@ -114,28 +120,38 @@ def stitchImages(imgs, templates_loc):
     return(result)
 
 
-if __name__ == '__main__':
+H_templ_ratio = 0.45
+
+def get_stitched_image(batch_id):
+    global H_templ_ratio
     print("[INFO] loading images...")
-    imagePaths = sorted(list(paths.list_images('captured_images/' + sys.argv[1])))
+    imagePaths = sorted(list(paths.list_images('captured_images/' + batch_id)))
     images = []
 
-# loop over the image paths, load each one, and add them to our
-# images to stich list
-for imagePath in imagePaths:
-    print(imagePath)
-    image = cv2.imread(imagePath)
-    images.append(image)
+    # loop over the image paths, load each one, and add them to our
+    # images to stich list
+    for imagePath in imagePaths:
+        print(imagePath)
+        image = cv2.imread(imagePath)
+        images.append(image)
 
-# initialize OpenCV's image sticher object and then perform the image
-# stitching
-print("[INFO] stitching images...")
+    # initialize OpenCV's image sticher object and then perform the image
+    # stitching
+    print("[INFO] stitching images...")
 
-# H_templ_ratio: horizontal ratio of the input that we will keep to create a template
-H_templ_ratio = 0.45
-templates_loc = []  # templates location
+    # H_templ_ratio: horizontal ratio of the input that we will keep to create a template
+    
+    templates_loc = []  # templates location
 
-matchImages(images, templates_loc)
+    matchImages(images, templates_loc)
 
-result = stitchImages(images, templates_loc)
+    result = stitchImages(images, templates_loc)
+    
+    dir_name = os.path.join('processed_images/', batch_id) 
+                    
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+    file_path = str(os.path.join(dir_name, "stitched_image.jpg"))
+    cv2.imwrite( file_path, result)
 
-cv2.imwrite("result.jpg", result)
+get_stitched_image ("section")
