@@ -14,15 +14,15 @@ blue = LED(6)
 def async_led():
     global red, green, blue
     while True:
-        if state is 'init':
+        if state.state is 'init':
             red.on()
             green.off()
             blue.off()
-        elif state is 'ready':
-            red.on()
+        elif state.state is 'ready':
+            red.off()
             blue.on()
-            green.off()
-        elif state is 'error_single_tap':
+            green.on()
+        elif state.state is 'error_single_tap':
             blue.off()
             green.off()
             
@@ -40,19 +40,20 @@ def async_led():
             sleep(.33)
             red.off()
             sleep(.33)
-            stste.state = 'ready'
+            state.state = 'ready'
             
-        elif state is 'scanning':
+        elif state.state is 'scanning':
+            sleep(1.5)
             blue.on()
             red.off()
             green.off()
         
-        elif state is 'result':
+        elif state.state is 'result':
             blue.off()
             red.off()
             green.on()
 
-        elif state is 'no_result':
+        elif state.state is 'no_result':
             blue.off()
             green.off()
             
@@ -68,27 +69,29 @@ def async_led():
 
             red.on()
         
-        elif state is 'result_cycle':
+        elif state.state is 'result_cycle':
             blue.off()
             green.off()
             
-            red.on()
+            green.on()
             sleep(.22)
-            red.off()
-            sleep(.22)
-
-            red.on()
-            sleep(.22)
-            red.off()
+            green.off()
             sleep(.22)
 
-            red.on()
+            green.on()
             sleep(.22)
-            red.off()
+            green.off()
             sleep(.22)
-            stste.state = 'result'
+
+            green.on()
+            sleep(.22)
+            green.off()
+            sleep(.22)
+            state.state = 'result'
 
 
 def start_led():
     t = threading.Thread(target=async_led)
     t.start()
+
+#ERROR SOLVED? YES

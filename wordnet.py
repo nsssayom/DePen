@@ -5,13 +5,16 @@ from nltk import everygrams
 
 def check_spelling(word):
     d = enchant.Dict('en_US')
-    if d.check(word):
-        return word.strip()
-    else:
-        sub_string_arr = sub_string_arr=[''.join(_ngram) for _ngram in everygrams( word) if d.check(''.join(_ngram)) and len(_ngram) > 1]
-        word = sub_string_arr [len(sub_string_arr) - 1].strip()
-        ''.join(e for e in word if e.isalpha())
-        return word
+    try:
+        if d.check(word):
+            return word.strip()
+        else:
+            sub_string_arr = sub_string_arr=[''.join(_ngram) for _ngram in everygrams( word) if d.check(''.join(_ngram)) and len(_ngram) > 1]
+            word = sub_string_arr [len(sub_string_arr) - 1].strip()
+            ''.join(e for e in word if e.isalpha())
+            return word
+    except:
+        return False
 
 def get_synset(word):
     #word = check_spelling(word)

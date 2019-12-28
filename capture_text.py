@@ -87,7 +87,7 @@ with picamera.PiCamera() as camera:
 
     print("Starting camera preview...")
     camera.start_preview()
-    time.sleep(2)
+    #time.sleep(2)
 
     print("Capturing video...")
     try:

@@ -12,6 +12,7 @@ from gpiozero import LED, Button
 from image_stiching import get_stitched_image
 from ocr import ocr
 from wordnet import check_spelling, get_synset
+from led_controller import start_led
 
 was_held = False
 definition_index = 0
@@ -19,19 +20,15 @@ word = None
 batch_id = None         # Identify each scan run with timestamp. None if no scan is performed
 process = None
 
-red = LED(0)
-green = LED(5)
-blue = LED(6)
-
 def held():
     global process
     global was_held
     global batch_id
     was_held = True
-    state.state = 'scanning'                                        # TODO: Define LED for scanning [steady blue]
     print("Button HELD")
     batch_id = str(datetime.datetime.now()).replace(" ", "_")
     print ("Starting new Scan Batch: {0}".format(batch_id))
+    state.state = 'scanning'                                        # TODO: Define LED for scanning [steady blue]
     process = subprocess.Popen(['python3', 'capture_text.py', batch_id])
 
 def released():
@@ -48,6 +45,10 @@ def released():
         get_stitched_image (batch_id)
         scanned_word = ocr(batch_id)
         word = check_spelling (scanned_word)
+        if not word:
+            state.state = 'no_result'
+            print_prompt("Error in scanning")
+            return
         print_prompt("Searching meaning for \n{0}".format(word)) 
         if print_definition(word, 0, True):
             state.state = 'result'                          # TODO: Define LED for no_result [Steady Green]
@@ -70,7 +71,8 @@ def pressed():
     
 button = Button(21)
 state.state = 'init'                                   # TODO: Define LED for init state [steady red]
-print_prompt ("Welcome to DePen")
+start_led()
+print_prompt ("Welcome to DePen\nPlease Wait...")
 print ("State: ", state.state)
 get_synset("Welcome")
 state.state = 'ready'                                   # TODO: Define LED for ready state  [steady cyan = R + B]
